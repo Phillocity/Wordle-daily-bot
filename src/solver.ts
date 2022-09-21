@@ -67,7 +67,7 @@ const filterDuplicateIndex = (
 
       const allGuessFilter = guess.every( guesses => {
         const regexExcludeCorrect = new RegExp(`[${correct}]`, "g");
-        const previousWord = guesses
+        const previousWord = guesses.replace(regexExcludeCorrect, "");
         const potentialWord = word.replace(regexExcludeCorrect, "");
         const containDuplicatePresent = [...previousWord].some((item: string) => {
           return previousWord.indexOf(item) === potentialWord.indexOf(item)
