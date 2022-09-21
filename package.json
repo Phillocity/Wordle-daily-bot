@@ -4,8 +4,7 @@
   "description": "",
   "private": true,
   "scripts": {
-    "start": "nodemon dist/js/app.js",
-    "dev": "nodemon src/app.ts"
+    "start": "nodemon src/app.ts"
   },
   "author": "",
   "license": "ISC",
