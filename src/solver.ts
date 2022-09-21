@@ -21,7 +21,7 @@ const filterCorrect = (correct: string[]) => {
   return results;
 };
 
-/* ---------------------- Present Filter ---------------------- */
+ /* ----------------- Present Filter to include any word that has yellow keywords ---------------- */
 const filterPresent = (filterCorrect: string[], present: string[]) => {
   const results: string[] = filterCorrect
     .map((word: any) => {
@@ -32,7 +32,7 @@ const filterPresent = (filterCorrect: string[], present: string[]) => {
   return results;
 };
 
-/* ---------------------- Exclusion Filter ---------------------- */
+ /* -------------- Exclusion Filter and removes guessed keywords from the word array ------------- */
 const filterExclude = (
   filterPresent: string[],
   exclude: string[],
@@ -53,6 +53,10 @@ const filterExclude = (
   return results.filter((word) => !guess.includes(word)).sort();
 };
 
+/* --- Further filters the list to not include any keywords where previous guesses overlapped --- */
+/* -------------- So words such as "sleet" and "steal" are not included in the list ------------- */
+/* ------------------------ Due to "S" and "L" being in the same index position ----------------- */
+
 const filterDuplicateIndex = (
   filterExclude: string[],
   correct: string[],
@@ -60,22 +64,26 @@ const filterDuplicateIndex = (
 ) => {
   const finalResults = filterExclude
     .filter((word: any) => {
-      const regexExcludeCorrect = new RegExp(`[${correct}]`, "g");
-      const previousWord = guess
-        .slice(-1)
-        .join("")
-        .replace(regexExcludeCorrect, "");
-      const potentialWord = word.replace(regexExcludeCorrect, "");
-      const containDuplicatePresent = [...previousWord].some((item: string) => {
-        if (previousWord.indexOf(item) === potentialWord.indexOf(item))
-          return true;
-      });
-      return !containDuplicatePresent;
+
+      const allGuessFilter = guess.every( guesses => {
+        const regexExcludeCorrect = new RegExp(`[${correct}]`, "g");
+        const previousWord = guesses
+        const potentialWord = word.replace(regexExcludeCorrect, "");
+        const containDuplicatePresent = [...previousWord].some((item: string) => {
+          return previousWord.indexOf(item) === potentialWord.indexOf(item)
+        });
+        return !containDuplicatePresent
+      })
+
+      return allGuessFilter;
     })
     .sort();
   return finalResults;
 };
 
+/* ---------------------------------------------------------------------------------------------- */
+/*                                         Exported solver                                        */
+/* ---------------------------------------------------------------------------------------------- */
 export const solver = async (
   correct: string[],
   present: string[],

@@ -144,7 +144,7 @@ const wordleSolve = async () => {
     const sortedKeywords = solverKeywords.sort((a: string, b: string) => {
       if (new Set(a).size > new Set(b).size) return -1;
     });
-    const nextWord = lodash.sample(sortedKeywords).slice(0, 10);
+    const nextWord = lodash.sample(sortedKeywords)
     guess.push(nextWord);
     await typer(nextWord);
   }
