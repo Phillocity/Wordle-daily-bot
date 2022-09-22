@@ -84,6 +84,10 @@ const wordleSolve = async () => {
   await page.waitForSelector(".Modal-module_closeIcon__b4z74");
   await page.click(".Modal-module_closeIcon__b4z74");
   await page.waitForSelector(".Row-module_row__dEHfN");
+  await page.evaluate(() => {
+    //@ts-ignore
+    document.querySelector("div").remove()
+  });
 
   /* -------------------------------------- Typing best starter word -------------------------------------- */
   const typer = async (word: string) => {
