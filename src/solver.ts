@@ -12,27 +12,29 @@ const words = syncReadFile("src/words.txt");
 const filterCorrect = (correct: string[]) => {
   const results = words
     .map((word: string) => {
-      const regexCorrect = new RegExp(
-        correct.map((i) => (i === "" ? "." : i)).join("")
-      );
+      const regexCorrect = new RegExp(correct.map((i) => (i === "" ? "." : i)).join(""));
       if (word.match(regexCorrect)) return word;
     })
     .filter((x) => typeof x === "string");
   return results;
 };
 
- /* ----------------- Present Filter to include any word that has yellow keywords ---------------- */
-const filterPresent = (filterCorrect: string[], present: string[]) => {
+/* ----------------- Present Filter to include any word that has yellow keywords ---------------- */
+const filterPresent = (filterCorrect: string[], present: string[], correct: string[]) => {
+  
   const results: string[] = filterCorrect
     .map((word: any) => {
-      if (present.join("").length === 0) return word;
-      if (present.every((item: string) => word.includes(item))) return word;
+      const deDupe = present.filter((x) => {
+        if (![...correct].includes(x)) return true;
+      });
+      if (deDupe.join("").length === 0) return word;
+      if (deDupe.every((item: string) => word.includes(item))) return word;
     })
     .filter((x) => typeof x === "string");
   return results;
 };
 
- /* -------------- Exclusion Filter and removes guessed keywords from the word array ------------- */
+/* -------------- Exclusion Filter and removes guessed keywords from the word array ------------- */
 const filterExclude = (
   filterPresent: string[],
   exclude: string[],
@@ -43,9 +45,9 @@ const filterExclude = (
   const results: string[] = filterPresent
     .map((word: any) => {
       if (exclude.join("").length === 0) return word;
-      const deDupe = exclude.filter(
-        (x) => ![...present, ...correct].includes(x)
-      );
+      const deDupe = exclude.filter((x) => {
+        if (![...present, ...correct].includes(x)) return true;
+      });
       const regexExclude = new RegExp(`[${deDupe.join("")}]`);
       if (!word.match(regexExclude)) return word;
     })
@@ -64,16 +66,17 @@ const filterDuplicateIndex = (
 ) => {
   const finalResults = filterExclude
     .filter((word: any) => {
-
-      const allGuessFilter = guess.every( guesses => {
+      const allGuessFilter = guess.every((guesses) => {
         const regexExcludeCorrect = new RegExp(`[${correct}]`, "g");
         const previousWord = guesses.replace(regexExcludeCorrect, "");
         const potentialWord = word.replace(regexExcludeCorrect, "");
-        const containDuplicatePresent = [...previousWord].some((item: string) => {
-          return previousWord.indexOf(item) === potentialWord.indexOf(item)
-        });
-        return !containDuplicatePresent
-      })
+        const containDuplicatePresent = [...previousWord].some(
+          (item: string) => {
+            return previousWord.indexOf(item) === potentialWord.indexOf(item);
+          }
+        );
+        return !containDuplicatePresent;
+      });
 
       return allGuessFilter;
     })
@@ -91,7 +94,7 @@ export const solver = async (
   guess: string[]
 ) => {
   const resultsCorrect: any[] = await filterCorrect(correct);
-  const resultsPresent: any[] = await filterPresent(resultsCorrect, present);
+  const resultsPresent: any[] = await filterPresent(resultsCorrect, present, correct);
   const resultsExclude: any[] = await filterExclude(
     resultsPresent,
     exclude,

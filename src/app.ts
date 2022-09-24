@@ -97,6 +97,7 @@ const wordleSolve = async () => {
   };
 
   await typer("salet");
+  
 
   let correct: string[] = ["", "", "", "", ""];
   let present: string[] = [];
@@ -143,12 +144,15 @@ const wordleSolve = async () => {
       exclude,
       guess
     );
+    console.log(row)
     console.log(solverKeywords)
+
     // @ts-ignore
     const sortedKeywords = solverKeywords.sort((a: string, b: string) => {
       if (new Set(a).size > new Set(b).size) return -1;
     });
     const nextWord = lodash.sample(sortedKeywords)
+    console.log(nextWord)
     guess.push(nextWord);
     await typer(nextWord);
   }

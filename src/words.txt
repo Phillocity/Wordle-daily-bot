@@ -5312,7 +5312,6 @@ unapt
 unarc
 unarm
 unary
-unate
 unban
 unbar
 unbox
