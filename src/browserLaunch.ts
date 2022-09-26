@@ -22,7 +22,7 @@ const delay = async (time: number) => {
       // executablePath: '/snap/bin/chromium',
       // executablePath: "/usr/bin/google-chrome-stable",
       headless: true,
-      args: ['--no-sandbox']
+      args: ['--no-sandbox',  "--disable-setuid-sandbox"]
     });
 
     let part2 = Math.round(performance.now() / 1000 - part1);
