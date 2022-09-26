@@ -1,0 +1,13 @@
+<%- include("partials/header") %>
+<script>
+  const timeout = 100;
+
+  setTimeout(function () {
+     window.location = "/result";
+  }, timeout);
+</script>
+<div class="container d-flex align-items-center justify-content-center flex-column">
+  <img class="img-fluid m-4" src="static/loading.gif"  id="results" />
+  <h1>Attempting to generate solution screenshot...</h1>
+</div>
+<%- include("partials/footer") %>
