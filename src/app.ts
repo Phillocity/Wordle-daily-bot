@@ -26,13 +26,3 @@ app.route("/result").get((req: Request, res: Response) => {
   };
   attempt();
 });
-
-// app.route("/success")
-// .get((req: Request, res: Response) => {
-//     res.render("partials/success");
-// })
-
-// app.route("/error")
-// .get((req: Request, res: Response) => {
-//     res.render("partials/error");
-// })
