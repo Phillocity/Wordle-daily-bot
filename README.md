@@ -4,7 +4,6 @@
   <img src="https://user-images.githubusercontent.com/12134641/192357386-e616bd14-4eb1-4118-8afb-86de4726f6f0.gif">
 </p>
 
-
 A Wordle bot that attempts to crack the daily Wordle on the [official Wordle site.](https://www.nytimes.com/games/wordle/index.html) Written in TypeScript. **[ You can see the end product here](https://wordle-daily-solver.herokuapp.com/)**
 
 # Overview
