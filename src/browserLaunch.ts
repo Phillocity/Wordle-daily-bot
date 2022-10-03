@@ -20,13 +20,13 @@ export const browserSolved = async () => {
     const browser = await puppeteer.launch({
       // executablePath: '/snap/bin/chromium',
       // executablePath: "/usr/bin/google-chrome-stable",
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      args: ["--headless","--no-sandbox", "--disable-setuid-sandbox"],
     });
+    const context = await browser.createIncognitoBrowserContext();
 
     let part2 = Math.round(performance.now() / 1000 - part1);
     console.log(`2. Waiting for New Tab`);
-    const page = await browser.newPage();
+    const page = await context.newPage();
 
     let part3 = Math.round(performance.now() / 1000 - part2);
     console.log(`3. Navigate to Page`);
