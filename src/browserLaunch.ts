@@ -20,7 +20,7 @@ export const browserSolved = async () => {
     const browser = await puppeteer.launch({
       // executablePath: '/snap/bin/chromium',
       // executablePath: "/usr/bin/google-chrome-stable",
-      headless: false,
+      headless: true,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
