@@ -3,9 +3,8 @@ import lodash from "lodash";
 import { performance, PerformanceObserver } from "perf_hooks";
 import puppeteer from "puppeteer";
 
-
 export const browserSolved = async () => {
-const delay = async (time: number) => {
+  const delay = async (time: number) => {
     return new Promise(function (resolve) {
       setTimeout(resolve, time);
     });
@@ -21,8 +20,8 @@ const delay = async (time: number) => {
     const browser = await puppeteer.launch({
       // executablePath: '/snap/bin/chromium',
       // executablePath: "/usr/bin/google-chrome-stable",
-      headless: true,
-      args: ['--no-sandbox',  "--disable-setuid-sandbox"]
+      headless: false,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
     let part2 = Math.round(performance.now() / 1000 - part1);
@@ -50,6 +49,7 @@ const delay = async (time: number) => {
       //@ts-ignore
       document.querySelector("div").remove();
     });
+    await delay(1000);
 
     /* -------------------------------------- Typing best starter word -------------------------------------- */
     const typer = async (word: string) => {
@@ -95,9 +95,9 @@ const delay = async (time: number) => {
       );
 
       /* ---------------------------- Update values from browser evaluation --------------------------- */
-      correct = row.correct || [];
-      present = row.present || [];
-      exclude = row.exclude || [];
+      correct = row.correct;
+      present = row.present;
+      exclude = row.exclude;
 
       if (lodash.without(correct, "").length === 5) break;
       const solverKeywords = await solver.solver(
@@ -111,7 +111,9 @@ const delay = async (time: number) => {
       const sortedKeywords = solverKeywords.sort((a: string, b: string) => {
         if (new Set(a).size > new Set(b).size) return -1;
       });
+
       const nextWord = lodash.sample(sortedKeywords);
+
       guess.push(nextWord);
       await typer(nextWord);
     }
@@ -125,9 +127,9 @@ const delay = async (time: number) => {
     let part4 = Math.round(performance.now() / 1000);
     console.log(`4. Screenshot`);
     console.log(`---------------------`);
-    await page.bringToFront()
+    await page.bringToFront();
     await page.screenshot({ path: "results.png" });
     await browser.close();
-  }
-   await wordleSolve();
-}
+  };
+  await wordleSolve();
+};
