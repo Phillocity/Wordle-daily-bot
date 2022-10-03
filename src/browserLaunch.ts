@@ -33,8 +33,7 @@ export const browserSolved = async () => {
     await page.goto("https://www.nytimes.com/games/wordle/index.html", {
       waitUntil: "domcontentloaded",
     });
-    //@ts-ignore
-    await page._client.send("Animation.setPlaybackRate", { playbackRate: 2 });
+
 
     /* ---------------------------------------------------------------------------------------------- */
     /*                                 Close cookie and accept prompt                                 */
