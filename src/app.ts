@@ -21,6 +21,7 @@ app.route("/result").get((req: Request, res: Response) => {
       await browserLaunch.browserSolved();
       res.render("partials/success");
     } catch (err) {
+      console.log(err);
       res.render("partials/error");
     }
   };
