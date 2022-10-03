@@ -20,7 +20,7 @@ export const browserSolved = async () => {
     const browser = await puppeteer.launch({
       // executablePath: '/snap/bin/chromium',
       // executablePath: "/usr/bin/google-chrome-stable",
-      args: ["--headless","--no-sandbox", "--disable-setuid-sandbox"],
+      args: ["--headless","--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", "--single-process"],
     });
     const context = await browser.createIncognitoBrowserContext();
 
