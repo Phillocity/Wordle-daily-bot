@@ -20,20 +20,24 @@ export const browserSolved = async () => {
     const browser = await puppeteer.launch({
       // executablePath: '/snap/bin/chromium',
       // executablePath: "/usr/bin/google-chrome-stable",
-      args: ["--headless","--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", "--single-process"],
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--single-process",
+      ],
     });
-    const context = await browser.createIncognitoBrowserContext();
 
     let part2 = Math.round(performance.now() / 1000 - part1);
     console.log(`2. Waiting for New Tab`);
-    const page = await context.newPage();
+    const page = await browser.newPage();
 
     let part3 = Math.round(performance.now() / 1000 - part2);
     console.log(`3. Navigate to Page`);
     await page.goto("https://www.nytimes.com/games/wordle/index.html", {
       waitUntil: "domcontentloaded",
     });
-
 
     /* ---------------------------------------------------------------------------------------------- */
     /*                                 Close cookie and accept prompt                                 */
@@ -126,8 +130,8 @@ export const browserSolved = async () => {
     let part4 = Math.round(performance.now() / 1000);
     console.log(`4. Screenshot`);
     console.log(`---------------------`);
-    await page.bringToFront();
     await page.screenshot({ path: "results.png" });
+    await page.close();
     await browser.close();
   };
   await wordleSolve();
