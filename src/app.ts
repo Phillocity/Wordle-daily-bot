@@ -11,18 +11,17 @@ app.use("/static", express.static("."));
 app.use("/js", express.static("dist/scripts"));
 app.set("view engine", "ejs");
 
-app.route("/").get((req: Request, res: Response) => {
+app.route("/")
+.get((req: Request, res: Response) => {
   res.render("home");
-});
-
-app.route("/result").get((req: Request, res: Response) => {
+})
+.post((req: Request, res: Response) => {
   const attempt = async () => {
     try {
       await browserLaunch.browserSolved();
-      res.render("partials/success");
+      res.send("Success");
     } catch (err) {
-      console.log(err);
-      res.render("partials/error");
+      res.status(500).send(err);
     }
   };
   attempt();

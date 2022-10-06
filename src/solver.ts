@@ -81,7 +81,7 @@ const filterDuplicateIndex = (
       return allGuessFilter;
     })
     .sort();
-  return finalResults;
+  return finalResults.filter((x) => typeof x === "string");
 };
 
 /* ---------------------------------------------------------------------------------------------- */

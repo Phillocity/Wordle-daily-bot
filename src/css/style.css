@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300&display=swap');
+
 * {
-  font-family: Helvetica Neue, Arial, sans-serif;
+  font-family: 'Titillium Web', sans-serif;
 }
 
 .topnav {
