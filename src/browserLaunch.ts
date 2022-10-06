@@ -43,20 +43,19 @@ export const browserSolved = async () => {
     /*                                 Close cookie and accept prompt                                 */
     /* ---------------------------------------------------------------------------------------------- */
 
-    await page.waitForSelector("#pz-gdpr-btn-accept");
-    await page.click("#pz-gdpr-btn-accept");
-    await page.waitForSelector(".Modal-module_closeIcon__b4z74");
-    await page.click(".Modal-module_closeIcon__b4z74");
-    await page.waitForSelector(".Row-module_row__dEHfN");
+    await page.waitForSelector("#pz-gdpr");
     await page.evaluate(() => {
-      //@ts-ignore
-      document.querySelector("div").remove();
+      const cookie = document.querySelector("#pz-gdpr");
+      cookie?.remove();
     });
-    await delay(1000);
+    await page.waitForSelector(".Modal-module_closeIcon__b4z74");
+    await page.keyboard.press("Escape");
+    await page.waitForSelector(".Row-module_row__dEHfN");
+    await delay(3000);
 
     /* -------------------------------------- Typing best starter word -------------------------------------- */
     const typer = async (word: string) => {
-      await page.keyboard.type(word);
+      await page.keyboard.type(word, { delay: 10 });
       await page.keyboard.press("Enter");
       await delay(3000);
     };
@@ -76,7 +75,7 @@ export const browserSolved = async () => {
           /* -------------------- Get all letter tiles from each row and turn to array -------------------- */
           const letterTiles = Array.from(
             document.querySelectorAll(".Tile-module_tile__3ayIZ")
-          ).splice(0 + rowNumber, rowNumber + 5);
+          ).slice(0 + rowNumber, rowNumber + 5);
 
           letterTiles.forEach((letter, index) => {
             // Get the letter from each tile
@@ -87,7 +86,6 @@ export const browserSolved = async () => {
             } else if ((letter as HTMLElement).dataset.state === "absent")
               exclude.push(letter.textContent!);
           });
-
           return { correct, present, exclude, guess };
         },
         rowNumber,
@@ -102,6 +100,7 @@ export const browserSolved = async () => {
       present = row.present;
       exclude = row.exclude;
 
+
       if (lodash.without(correct, "").length === 5) break;
       const solverKeywords = await solver.solver(
         correct,
@@ -114,9 +113,9 @@ export const browserSolved = async () => {
       const sortedKeywords = solverKeywords.sort((a: string, b: string) => {
         if (new Set(a).size > new Set(b).size) return -1;
       });
+      
 
       const nextWord = lodash.sample(sortedKeywords);
-
       guess.push(nextWord);
       await typer(nextWord);
     }
