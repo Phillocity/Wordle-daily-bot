@@ -1,7 +1,3 @@
-window.onload = function exampleFunction() {
-    $('.retro').trigger('click');
-}
-
 const dot = () => {
     const dots = $('#status').text().match(/\./g) || [];
     if (dots!.length < 3 ) {
@@ -17,7 +13,7 @@ const delay = async (time: number) => {
     });
   };
 
-$('.retro').on('click', function (e) {
+$('.retro:eq(1)').on('click', function (e) {
     e.preventDefault();
     $(".retro").prop("disabled",true)
     $('#status').text('ATTEMPTING TO SOLVE.');
