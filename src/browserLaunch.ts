@@ -120,6 +120,13 @@ export const browserSolved = async () => {
       await typer(nextWord);
     }
 
+    if (lodash.without(correct, "").length !== 5) {
+      await page.close();
+      await browser.close();
+      console.log("Failed to solve");
+      throw new Error("Unable to solve");
+    }
+    
     /* --------------- Closes the stats modal when successful then takes a screenshot --------------- */
     await page.waitForSelector(".Modal-module_closeIcon__b4z74");
     page.click(".Modal-module_closeIcon__b4z74");
