@@ -29,12 +29,12 @@ $('.retro:eq(1)').on('click', function (e) {
         contentType: 'application/json',
         success: function () {
             const success = async () => {
-                await delay(2000);
+                await fetch("static/results.png", {cache: 'reload', mode: 'no-cors'})
+                $('#results').attr('src', 'static/results.png');
                 $('#status').text('<SOLUTION GENERATED>');
                 $(".retro").prop("disabled",false)
                 clearInterval(dotTimer)
                 clearTimeout(anyMinute)
-                $('#results').attr('src', 'static/results.png');
             }
             success();
         },

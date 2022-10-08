@@ -69,63 +69,64 @@ export const browserSolved = async () => {
 
     await page.exposeFunction("solver", solver.solver);
 
-    for (let rowNumber = 0; rowNumber <= 25; rowNumber += 5) {
-      const row: any = await page.evaluate(
-        (rowNumber, correct, present, exclude, guess) => {
-          /* -------------------- Get all letter tiles from each row and turn to array -------------------- */
-          const letterTiles = Array.from(
-            document.querySelectorAll(".Tile-module_tile__3ayIZ")
-          ).slice(0 + rowNumber, rowNumber + 5);
+    try {
+      for (let rowNumber = 0; rowNumber <= 25; rowNumber += 5) {
+        const row: any = await page.evaluate(
+          (rowNumber, correct, present, exclude, guess) => {
+            /* -------------------- Get all letter tiles from each row and turn to array -------------------- */
+            const letterTiles = Array.from(
+              document.querySelectorAll(".Tile-module_tile__3ayIZ")
+            ).slice(0 + rowNumber, rowNumber + 5);
 
-          letterTiles.forEach((letter, index) => {
-            // Get the letter from each tile
-            if ((letter as HTMLElement).dataset.state === "correct") {
-              correct[index] = letter.textContent!.trim();
-            } else if ((letter as HTMLElement).dataset.state === "present") {
-              present.push(letter.textContent!);
-            } else if ((letter as HTMLElement).dataset.state === "absent")
-              exclude.push(letter.textContent!);
-          });
-          return { correct, present, exclude, guess };
-        },
-        rowNumber,
-        correct,
-        present,
-        exclude,
-        guess
-      );
+            letterTiles.forEach((letter, index) => {
+              // Get the letter from each tile
+              if ((letter as HTMLElement).dataset.state === "correct") {
+                correct[index] = letter.textContent!.trim();
+              } else if ((letter as HTMLElement).dataset.state === "present") {
+                present.push(letter.textContent!);
+              } else if ((letter as HTMLElement).dataset.state === "absent")
+                exclude.push(letter.textContent!);
+            });
+            return { correct, present, exclude, guess };
+          },
+          rowNumber,
+          correct,
+          present,
+          exclude,
+          guess
+        );
 
-      /* ---------------------------- Update values from browser evaluation --------------------------- */
-      correct = row.correct;
-      present = row.present;
-      exclude = row.exclude;
+        /* ---------------------------- Update values from browser evaluation --------------------------- */
+        correct = row.correct;
+        present = row.present;
+        exclude = row.exclude;
 
+        if (lodash.without(correct, "").length === 5) break;
+        const solverKeywords = await solver.solver(
+          correct,
+          present,
+          exclude,
+          guess
+        );
 
-      if (lodash.without(correct, "").length === 5) break;
-      const solverKeywords = await solver.solver(
-        correct,
-        present,
-        exclude,
-        guess
-      );
+        // @ts-ignore
+        const sortedKeywords = solverKeywords.sort((a: string, b: string) => {
+          if (new Set(a).size > new Set(b).size) return -1;
+        });
 
-      // @ts-ignore
-      const sortedKeywords = solverKeywords.sort((a: string, b: string) => {
-        if (new Set(a).size > new Set(b).size) return -1;
-      });
-      
-
-      const nextWord = lodash.sample(sortedKeywords);
-      guess.push(nextWord);
-      await typer(nextWord);
+        const nextWord = lodash.sample(sortedKeywords);
+        guess.push(nextWord);
+        await typer(nextWord);
+      }
+    } catch (err) {
+      throw new Error("Issue with Chromium browser");
     }
-
     if (lodash.without(correct, "").length !== 5) {
       await page.close();
       await browser.close();
       throw new Error("Out of attempts, please try again.");
     }
-    
+
     /* --------------- Closes the stats modal when successful then takes a screenshot --------------- */
     await page.waitForSelector(".Modal-module_closeIcon__b4z74");
     page.click(".Modal-module_closeIcon__b4z74");

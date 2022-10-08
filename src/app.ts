@@ -11,19 +11,20 @@ app.use("/static", express.static("."));
 app.use("/js", express.static("dist/scripts"));
 app.set("view engine", "ejs");
 
-app.route("/")
-.get((req: Request, res: Response) => {
-  res.render("home");
-})
-.post((req: Request, res: Response) => {
-  const attempt = async () => {
-    try {
-      await browserLaunch.browserSolved();
-      res.send("Success");
-    } catch (err) {
-      console.log(err);
-      res.status(500).send(err);
-    }
-  };
-  attempt();
-});
+app
+  .route("/")
+  .get((req: Request, res: Response) => {
+    res.render("home");
+  })
+  .post((req: Request, res: Response) => {
+    const attempt = async () => {
+      try {
+        await browserLaunch.browserSolved();
+        res.send("Success");
+      } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+      }
+    };
+    attempt();
+  });
