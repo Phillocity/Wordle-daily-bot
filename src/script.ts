@@ -14,10 +14,10 @@ const delay = async (time: number) => {
   };
 
 $('.retro:eq(1)').on('click', function (e) {
-    e.preventDefault();
-    $(".retro").prop("disabled",true)
-    $('#status').text('ATTEMPTING TO SOLVE.');
     $('#results').attr('src', 'static/loading.gif');
+    $(".retro").prop("disabled",true)
+    e.preventDefault();
+    $('#status').text('ATTEMPTING TO SOLVE.');
     const dotTimer = setInterval(dot, 600)
     const anyMinute = setTimeout(() => {
         $('#status').text('ANY SECOND NOW.');
@@ -28,19 +28,19 @@ $('.retro:eq(1)').on('click', function (e) {
         type: 'POST',
         contentType: 'application/json',
         success: function () {
+            $('#status').text('<SOLUTION GENERATED>');
+            $(".retro").prop("disabled",false)
             clearInterval(dotTimer)
             clearTimeout(anyMinute)
             $('#results').attr('src', 'static/results.png');
-            $('#status').text('<SOLUTION GENERATED>');
-            $(".retro").prop("disabled",false)
         },
         error: function () {
+            $('#results').attr('src', 'static/error.svg');
+            $('#status').text('<TOUGH COOKIE, PLEASE TRY AGAIN>');
+            $(".retro").prop("disabled",false)
             clearInterval(dotTimer)
             clearTimeout(anyMinute)
-            $('#results').attr('src', 'static/error.svg');
-            $('#status').text('<FAILED TO GENERATE SOLUTION, PLEASE TRY AGAIN>');
-            $(".retro").prop("disabled",false)
         }
-    });
+        });
    
 });

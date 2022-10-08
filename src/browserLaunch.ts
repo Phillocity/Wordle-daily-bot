@@ -123,8 +123,7 @@ export const browserSolved = async () => {
     if (lodash.without(correct, "").length !== 5) {
       await page.close();
       await browser.close();
-      console.log("Failed to solve");
-      throw new Error("Unable to solve");
+      throw new Error("Out of attempts, please try again.");
     }
     
     /* --------------- Closes the stats modal when successful then takes a screenshot --------------- */
