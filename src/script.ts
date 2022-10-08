@@ -28,11 +28,15 @@ $('.retro:eq(1)').on('click', function (e) {
         type: 'POST',
         contentType: 'application/json',
         success: function () {
-            $('#status').text('<SOLUTION GENERATED>');
-            $(".retro").prop("disabled",false)
-            clearInterval(dotTimer)
-            clearTimeout(anyMinute)
-            $('#results').attr('src', 'static/results.png');
+            const success = async () => {
+                await delay(2000);
+                $('#status').text('<SOLUTION GENERATED>');
+                $(".retro").prop("disabled",false)
+                clearInterval(dotTimer)
+                clearTimeout(anyMinute)
+                $('#results').attr('src', 'static/results.png');
+            }
+            success();
         },
         error: function () {
             $('#results').attr('src', 'static/error.svg');
