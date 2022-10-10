@@ -14,6 +14,7 @@ const delay = async (time: number) => {
   };
 
 $('.retro:eq(1)').on('click', function (e) {
+    $('#results').removeClass('d-none');
     $('#results').attr('src', 'static/loading.gif');
     $(".retro").prop("disabled",true)
     e.preventDefault();
