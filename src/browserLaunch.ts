@@ -35,32 +35,12 @@ export const browserSolved = async () => {
 
     let part3 = Math.round(performance.now() / 1000 - part2);
     console.log(`3. Navigate to Page`);
-    await page.goto("https://www.nytimes.com/games/wordle/index.html", {
-      waitUntil: "domcontentloaded",
-    });
 
-    /* ---------------------------------------------------------------------------------------------- */
-    /*                                 Close cookie and accept prompt                                 */
-    /* ---------------------------------------------------------------------------------------------- */
-
-    await page.waitForSelector("#pz-gdpr");
-    await page.evaluate(() => {
-      const cookie = document.querySelector("#pz-gdpr");
-      cookie?.remove();
-    });
-    await page.waitForSelector(".Modal-module_closeIcon__b4z74");
-    await page.keyboard.press("Escape");
-    await page.waitForSelector(".Row-module_row__dEHfN");
-    await delay(3000);
-
-    /* -------------------------------------- Typing best starter word -------------------------------------- */
     const typer = async (word: string) => {
       await page.keyboard.type(word, { delay: 10 });
       await page.keyboard.press("Enter");
       await delay(3000);
     };
-
-    await typer("salet");
 
     let correct: string[] = ["", "", "", "", ""];
     let present: string[] = [];
@@ -70,6 +50,26 @@ export const browserSolved = async () => {
     await page.exposeFunction("solver", solver.solver);
 
     try {
+      /* ---------------------------------------------------------------------------------------------- */
+      /*                                 Close cookie and accept prompt                                 */
+      /* ---------------------------------------------------------------------------------------------- */
+      await page.goto("https://www.nytimes.com/games/wordle/index.html", {
+        waitUntil: "domcontentloaded",
+      });
+      await page.waitForSelector("#pz-gdpr");
+      await page.waitForSelector(".Modal-module_closeIcon__b4z74");
+      await page.keyboard.press("Escape");
+      await page.waitForSelector(".Row-module_row__dEHfN");
+      await page.evaluate(() => {
+        const ad = document.querySelector(".ad.place-ad");
+        const cookie = document.querySelector("#pz-gdpr");
+        cookie?.remove();
+        ad?.remove();
+      });
+      await delay(3000);
+      /* -------------------------------------- Typing best starter word -------------------------------------- */
+
+      await typer("salet");
       for (let rowNumber = 0; rowNumber <= 25; rowNumber += 5) {
         const row: any = await page.evaluate(
           (rowNumber, correct, present, exclude, guess) => {
@@ -129,7 +129,7 @@ export const browserSolved = async () => {
 
     /* --------------- Closes the stats modal when successful then takes a screenshot --------------- */
     await page.waitForSelector(".Modal-module_closeIcon__b4z74");
-    page.click(".Modal-module_closeIcon__b4z74");
+    await page.keyboard.press("Escape");
     await page.waitForSelector(".Modal-module_closeIcon__b4z74", {
       hidden: true,
     });
